@@ -15,7 +15,6 @@ class LLM:
         if self.model.generation_config is not None and self.model.generation_config.pad_token_id is None:
             self.model.generation_config.pad_token_id = self.tokenizer.pad_token_id
 
-
     def call_llm_with_text(self, text: str, max_length) -> str:
         messages = self.call_llm([{"role": "user", "content": text}], max_length)
         return messages[-1]["content"]
@@ -28,39 +27,47 @@ class LLM:
             generated_ids = self.model.generate(**model_inputs, max_new_tokens=max_length)
         output_ids = generated_ids[0][len(model_inputs.input_ids[0]):].tolist()
         content = self.tokenizer.decode(output_ids, skip_special_tokens=True)
+        content = content.split("</think>")[-1] # ignore the thinking step in Qwen3 model
+        content = content.strip()
         messages.append({"role": "assistant", "content": content})
         return messages
 
-    def structured_output(self, query, max_length, structure: Type[BaseModel], retry_count=0):
-        system = (f"Answer the user query. Output your answer as JSON "
-                  f"that matches the given schema: ```json\n{structure.model_json_schema()}\n```. "
-                  f"Make sure to wrap the answer in ```json and ``` tags")
+    def structured_output(self, query, max_length, structure: Type[BaseModel], example:str = None, retry_count=0):
+        system = (f"Answer the user query. Output your answer as JSON that matches the given schema: "
+                  f"\n```json\n{structure.model_json_schema()}\n```. \n"
+                  f"Make sure to wrap the answer in ```json and ``` tags. "
+                  )
+        if example is not None:
+            system += f"\nHere is a example: \n```json\n{example}\n```"
+
         messages = [{"role": "system", "content": system}, {"role": "user", "content": query}]
 
-        for i in range(retry_count+1):
+        current_retry_count = 0
+        while True:
             messages = self.call_llm(messages, max_length)
             response = messages[-1]["content"]
             try:
                 matches = re.findall(r"```json(.*?)```", response, re.DOTALL)
+                if len(matches) <= 0:
+                    raise Exception("No JSON block found. Expected a fenced block: ```json ... ```")
                 obj = json.loads(matches[-1])
                 obj = structure.model_validate(obj).model_dump()
                 return {
                     "message": messages,
-                    "retry count": i,
-                    "structured output": obj
+                    "retry_count": current_retry_count,
+                    "structured_output": obj
                 }
-            except Exception:
-                pass
-
-            new_query = (f"The output is invalid, please try again. "
-                             f"You should answer the question in JSON that matches the given schema: "
-                             f"```json\n{structure.model_json_schema()}\n```. "
-                             f"Make sure to wrap the answer in ```json and ``` tags")
-            messages.append({"role": "user", "content": new_query})
+            except Exception as e:
+                if current_retry_count < retry_count:
+                    current_retry_count += 1
+                    new_query = f"Failed to extract JSON output, Exception: {str(e)}\n" + system + "\n please retry again."
+                    messages.append({"role": "user", "content": new_query})
+                else:
+                    break
 
         return {
                     "message": messages,
-                    "retry count": retry_count,
-                    "structured output": None
+                    "retry_count": current_retry_count,
+                    "structured_output": None
                 }
 

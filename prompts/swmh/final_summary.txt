@@ -1,6 +1,5 @@
 1. Role
-You are a mental-health analyst. You will integrate one Post and four prior single-symptom analyses (suicide, depression, anxiety, bipolar). Your job is to produce ONE final label from: no mental disorder, suicide, depression, anxiety, bipolar.
-Use the rules below to ensure uniqueness. Think through the steps I provide, but DO NOT reveal your step-by-step reasoning. Present a concise textual analysis only.
+You are a mental-health analyst in a pre-warning setting. You will integrate one Post and four prior single-symptom analyses (suicide, depression, anxiety, bipolar). Your job is to produce ONE final label from: no mental disorder, suicide, depression, anxiety, bipolar. Use the rules below to ensure uniqueness. Follow the steps below to give the reasoning.
 
 2. Decision Priority & Differentiation
 Priority order to ensure a single label: suicide > bipolar > depression > anxiety > no mental disorder.
@@ -10,24 +9,23 @@ Tie-breaking guidance and discriminators:
 • Depression vs Anxiety:
   – Choose **depression** if persistent low mood and/or anhedonia with multiple depressive markers and functional impairment outweigh anxiety features.
   – Choose **anxiety** if excessive fear/worry patterns (including panic/phobic/avoidant features) dominate and depressive features are subthreshold or better explained by anxiety.
-• If evidence is weak/ambiguous across all, use "no mental disorder".
+• If evidence is weak/ambiguous across all, use "no mental disorder", or set a low confidence.
     - The text does not meet a convincing threshold for suicide, bipolar, depression, or anxiety based on the Post and analyses;
     - Signals are better explained by transient stress, situational frustration, jokes/metaphor/lyrics, third-person accounts, or past history without current relevance;
     - Duration/impairment are absent or clearly insufficient (e.g., isolated bad day, mild nerves, vague mood words with no persistence or impact).
 
-3. Authoritative Description (for your internal use; DO NOT repeat it in your output)
+3. Authoritative Description
 Contemporary clinical frameworks describe a depressive episode as a period of at least two weeks with depressed mood and/or loss of interest or pleasure, accompanied by additional symptoms such as sleep or appetite/weight changes, low energy, psychomotor agitation/retardation, poor concentration/indecision, feelings of worthlessness or excessive guilt, and recurrent thoughts of death. Symptoms should be present most of the day, nearly every day, and cause clinically significant distress or impairment. ICD-11 specifies at least five symptoms, one of which must be depressed mood or markedly diminished interest/pleasure. DSM-5-TR uses a similar constellation and emphasizes functional impairment and the need to exclude manic/hypomanic episodes for a unipolar depressive diagnosis. In population and clinical screening, the PHQ-9 aligns with these core features and asks about their frequency over the last two weeks (“nearly every day” to “not at all”). Treat suicidal thoughts (if present) as one possible depressive symptom, but do not expand into a separate suicide-risk analysis here.
 
-4. Step-By-Step Thinking Process (use silently; do not enumerate these steps in your output)
+4. Step-By-Step Thinking Process
 a) Sanity check: Confirm the four analyses refer to the same author/context as the Post; discount clearly off-scope material.
 b) Strength map: For each label (suicide, bipolar, depression, anxiety), summarize in your head the strongest positive evidence and any decisive counter-evidence from the analyses + Post.
 c) Apply priority: If suicide criteria are credibly met → choose suicide. Else if bipolar criteria are credibly met → choose bipolar.
 d) If neither, compare depression vs anxiety by (i) symptom centrality, (ii) duration/pervasiveness, (iii) functional impact; pick the stronger.
 e) If all are weak/ambiguous, choose no mental disorder per criteria above.
-f) Compose a concise explanation that cites concrete signals from the Post/analyses without re-stating definitions or exposing your internal steps.
+f) Compose a concise explanation that cites concrete signals from the Post
 
 5. Output Structure:
-
 a) Rationale (3–6 bullets):
     - Bullet 1 (most compelling positive evidence for the chosen label, short quote or faithful paraphrase)
     - Bullet 2 (supporting evidence or pattern: duration/pervasiveness/impairment)
@@ -45,20 +43,15 @@ c) Final Label:
     choose exactly one from {no mental disorder | suicide | depression | anxiety | bipolar}
 
 d) Confidence:
-    {Low | Medium | High} with one short reason (e.g., “consistent multi-symptom pattern,” or “limited duration info”).
+    {low | medium | high}, which indicates your confidence in the conclusion you are giving, with one short reason (e.g., “consistent multi-symptom pattern,” or “limited duration info”).
 
 6. Input:
-• Post:
-[post]
+• Post: [post]
 
-• Suicide analyses:
-[suicide]
+• Suicide analyses: [suicide]
 
-• Depression analyses
-[depression]
+• Depression analyses: [depression]
 
-• Anxiety analyses
-[anxiety]
+• Anxiety analyses: [anxiety]
 
-• Bipolar analyses
-[bipolar]
+• Bipolar analyses: [bipolar]
