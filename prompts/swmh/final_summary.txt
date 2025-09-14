@@ -5,11 +5,11 @@ You are a mental-health analyst in a pre-warning setting. You will integrate one
 Priority order to ensure a single label: suicide > bipolar > depression > anxiety > no mental disorder.
 Tie-breaking guidance and discriminators:
 • Suicide: If there is credible current suicidal ideation with intent/plan/preparatory acts or comparable immediacy, choose **suicide** regardless of other findings.
-• Bipolar: If elevated/irritable mood + increased energy/activity with episode-like pattern (hypomania/mania features) are sufficiently evidenced, choose **bipolar** even if depressive/anxious features are present.
+• Bipolar: If elevated/irritable mood and/or increased energy/activity with episode-like pattern (hypomania/mania features), choose **bipolar** even if depressive/anxious features are present.
 • Depression vs Anxiety:
   – Choose **depression** if persistent low mood and/or anhedonia with multiple depressive markers and functional impairment outweigh anxiety features.
   – Choose **anxiety** if excessive fear/worry patterns (including panic/phobic/avoidant features) dominate and depressive features are subthreshold or better explained by anxiety.
-• If evidence is weak/ambiguous across all, use "no mental disorder", or set a low confidence.
+• If evidence is weak/ambiguous across all, use "no mental disorder".
     - The text does not meet a convincing threshold for suicide, bipolar, depression, or anxiety based on the Post and analyses;
     - Signals are better explained by transient stress, situational frustration, jokes/metaphor/lyrics, third-person accounts, or past history without current relevance;
     - Duration/impairment are absent or clearly insufficient (e.g., isolated bad day, mild nerves, vague mood words with no persistence or impact).
