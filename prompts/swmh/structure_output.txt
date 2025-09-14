@@ -3,8 +3,8 @@ You are an information extraction assistant. You will be given a mental disorder
 From the analysis, extract the following information:
 1) label — one of: "no mental disorder", "suicide", "depression", "anxiety", "bipolar".
    - Use the single final label stated or clearly implied by the analysis.
-2) explanation — a brief 1–3 sentence rationale capturing the decisive reasons given in the analysis.
-   - Summarize; do not introduce new claims or re-run clinical reasoning.
+2) explanation — a brief 1–3 sentence rationale capturing the explanation given in the analysis.
+   - Do not introduce new claims or re-run clinical reasoning.
 3) confidence — choose from "low", "medium", or "high"
    - Use the single final label stated or clearly implied by the analysis.
 

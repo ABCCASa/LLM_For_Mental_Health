@@ -14,10 +14,7 @@ Tie-breaking guidance and discriminators:
     - Signals are better explained by transient stress, situational frustration, jokes/metaphor/lyrics, third-person accounts, or past history without current relevance;
     - Duration/impairment are absent or clearly insufficient (e.g., isolated bad day, mild nerves, vague mood words with no persistence or impact).
 
-3. Authoritative Description
-Contemporary clinical frameworks describe a depressive episode as a period of at least two weeks with depressed mood and/or loss of interest or pleasure, accompanied by additional symptoms such as sleep or appetite/weight changes, low energy, psychomotor agitation/retardation, poor concentration/indecision, feelings of worthlessness or excessive guilt, and recurrent thoughts of death. Symptoms should be present most of the day, nearly every day, and cause clinically significant distress or impairment. ICD-11 specifies at least five symptoms, one of which must be depressed mood or markedly diminished interest/pleasure. DSM-5-TR uses a similar constellation and emphasizes functional impairment and the need to exclude manic/hypomanic episodes for a unipolar depressive diagnosis. In population and clinical screening, the PHQ-9 aligns with these core features and asks about their frequency over the last two weeks (“nearly every day” to “not at all”). Treat suicidal thoughts (if present) as one possible depressive symptom, but do not expand into a separate suicide-risk analysis here.
-
-4. Step-By-Step Thinking Process
+3. Step-By-Step Thinking Process (use silently; do not enumerate these steps in your output)
 a) Sanity check: Confirm the four analyses refer to the same author/context as the Post; discount clearly off-scope material.
 b) Strength map: For each label (suicide, bipolar, depression, anxiety), summarize in your head the strongest positive evidence and any decisive counter-evidence from the analyses + Post.
 c) Apply priority: If suicide criteria are credibly met → choose suicide. Else if bipolar criteria are credibly met → choose bipolar.
@@ -25,12 +22,12 @@ d) If neither, compare depression vs anxiety by (i) symptom centrality, (ii) dur
 e) If all are weak/ambiguous, choose no mental disorder per criteria above.
 f) Compose a concise explanation that cites concrete signals from the Post
 
-5. Output Structure:
+4. Output Structure:
 a) Rationale (3–6 bullets):
-    - Bullet 1 (most compelling positive evidence for the chosen label, short quote or faithful paraphrase)
-    - Bullet 2 (supporting evidence or pattern: duration/pervasiveness/impairment)
-    - Bullet 3 (why higher-priority labels were not chosen; e.g., “no plan/intent” for suicide; “no episode-like elevation” for bipolar)
-    - Bullet 4–6 (optional): additional supporting details or brief counter-evidence you weighed
+    - 1. (most compelling positive evidence for the chosen label, short quote or faithful paraphrase)
+    - 2. (supporting evidence or pattern: duration/pervasiveness/impairment)
+    - 3. (why higher-priority labels were not chosen; e.g., “no plan/intent” for suicide; “no episode-like elevation” for bipolar)
+    - 4–6. (optional, additional supporting details or brief counter-evidence you weighed)
 
 b)  Why Not the Others (1–2 bullets each, concise, only include if you did NOT choose it, to clarify why evidence was not insufficient):
     - Suicide: ...
@@ -45,13 +42,25 @@ c) Final Label:
 d) Confidence:
     {low | medium | high}, which indicates your confidence in the conclusion you are giving, with one short reason (e.g., “consistent multi-symptom pattern,” or “limited duration info”).
 
-6. Input:
-• Post: [post]
+e) Explanation:
+    Write a concise, plain-language paragraph that summarizes your reasoning in (a)–(d) steps. You may include the decisive evidence for the selected label, briefly note why the alternatives were not selected, and acknowledge any key uncertainties if relevant. Do not add new analysis or evidence.
 
-• Suicide analyses: [suicide]
+5. Input:
+• Post:
+[post]
 
-• Depression analyses: [depression]
 
-• Anxiety analyses: [anxiety]
+• Suicide analyses:
+[suicide]
 
-• Bipolar analyses: [bipolar]
+
+• Depression analyses:
+[depression]
+
+
+• Anxiety analyses:
+[anxiety]
+
+
+• Bipolar analyses:
+[bipolar]

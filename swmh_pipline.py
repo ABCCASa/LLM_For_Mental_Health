@@ -16,23 +16,31 @@ class MentalDisorderReport(BaseModel):
     explanation: str = Field(..., description="A plain-text summary of explanation about the decision making extracted from the content.")
     confidence: Literal["low", "medium", "high"] = Field(...,description="The confidence level extracted from the content.")
 
-
-
 def inference(llm, post, log = False):
     if log:
-        print(f"Post: {post}\n\n")
+        print(f"Post: \n{post}\n\n")
     single_symptom_result = {}
+
+    # stage one-by-one
+    keys, prompts= [], []
     for key, prompt_file in single_symptom_prompt.items():
         prompt = imhi_dataset.apply_prompts({"post": post}, prompt_file)
-        output = llm.call_llm_with_text(prompt, 2048)
-        output = output.split("\n")[-1]
+        keys.append(key)
+        prompts.append(prompt)
+
+    outputs = llm.call_llm_with_text_batch(prompts, 2048)
+    for key, output in zip(keys,outputs):
         single_symptom_result[key] = output
         if log:
             print(f"[{key} result]: \n{output}\n\n")
+
+    # stage2 summary
     prompt_for_summary = imhi_dataset.apply_prompts(single_symptom_result|{"post": post}, "prompts/swmh/final_summary.txt")
     output = llm.call_llm_with_text(prompt_for_summary , 2048)
     if log:
-        print(f"Output: \n{output}\n\n")
+        print(f"[Final Text Output]: \n{output}\n\n")
+
+    # stage3 structured_output
     prompt = imhi_dataset.apply_prompts({"analysis": output, "post": post}, "prompts/swmh/structure_output.txt")
     structured_output = llm.structured_output(prompt, 2048,  MentalDisorderReport, retry_count= 3)
     if log:

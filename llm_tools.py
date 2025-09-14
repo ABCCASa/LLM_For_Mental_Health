@@ -3,7 +3,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from pydantic import BaseModel
 import re
 import json
-from typing import Type, List
+from typing import Type, List,Dict
 class LLM:
     def __init__(self, model_path, device: str, cache_dir = None):
         self.tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir=cache_dir)
@@ -16,10 +16,25 @@ class LLM:
             self.model.generation_config.pad_token_id = self.tokenizer.pad_token_id
 
     def call_llm_with_text(self, text: str, max_length) -> str:
-        messages = self.call_llm([{"role": "user", "content": text}], max_length)
-        return messages[-1]["content"]
+        response = self.call_llm([{"role": "user", "content": text}], max_length)
+        return response
 
-    def call_llm(self, messages:List, max_length: int):
+    def call_llm_with_text_batch(self, text_batch, max_length)-> List[str]:
+        messages_batch = [[{"role": "user", "content": text}]for text in text_batch]
+        return  self.call_llm_batch(messages_batch, max_length)
+
+    def call_llm_batch(self, messages_batch: List[List[Dict]], max_length) -> List[str]:
+        messages_batch = self.tokenizer.apply_chat_template(messages_batch, add_generation_prompt=True, tokenize=False)
+        model_inputs = self.tokenizer(messages_batch, return_tensors="pt", padding=True, padding_side='left').to(self.model.device)
+        with torch.inference_mode():
+            generated_ids = self.model.generate(**model_inputs, max_new_tokens=max_length)
+        output_ids = generated_ids[:, len(model_inputs.input_ids[0]):]
+        responses = self.tokenizer.batch_decode(output_ids, skip_special_tokens=True)
+        responses = [response.split("</think>")[-1].strip() for response in responses]
+
+        return responses
+
+    def call_llm(self, messages:List[Dict], max_length: int) -> str:
         messages = messages.copy()
         text  = self.tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
         model_inputs = self.tokenizer(text , return_tensors="pt", padding=True).to(self.model.device)
@@ -29,8 +44,7 @@ class LLM:
         content = self.tokenizer.decode(output_ids, skip_special_tokens=True)
         content = content.split("</think>")[-1] # ignore the thinking step in Qwen3 model
         content = content.strip()
-        messages.append({"role": "assistant", "content": content})
-        return messages
+        return content
 
     def structured_output(self, query, max_length, structure: Type[BaseModel], example:str = None, retry_count=0):
         system = (f"Answer the user query. Output your answer as JSON that matches the given schema: "
@@ -44,8 +58,8 @@ class LLM:
 
         current_retry_count = 0
         while True:
-            messages = self.call_llm(messages, max_length)
-            response = messages[-1]["content"]
+            response = self.call_llm(messages, max_length)
+            messages.append({"role": "assistant", "content": response})
             try:
                 matches = re.findall(r"```json(.*?)```", response, re.DOTALL)
                 if len(matches) <= 0:
